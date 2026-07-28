@@ -14,6 +14,7 @@ final class Money
         'EUR' => '€',
         'GBP' => '£',
         'INR' => '₹',
+        'PKR' => 'Rs.',
         'AED' => 'AED ',
         'SGD' => 'S$',
         'MYR' => 'RM ',

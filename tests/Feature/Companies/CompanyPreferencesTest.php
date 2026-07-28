@@ -30,6 +30,18 @@ test('an owner can update the company preferences', function (): void {
         ->and($company->currency)->toBe('USD');
 });
 
+test('an owner can set the company currency to PKR', function (): void {
+    $user = User::factory()->create();
+    $company = resolve(CreateCompany::class)->handle($user, 'Acme Studio');
+
+    $this->actingAs($user)
+        ->patch(route('companies.preferences.update', ['company' => $company->slug]), ['timezone' => 'Asia/Karachi', 'currency' => 'PKR'])
+        ->assertRedirect();
+
+    expect($company->refresh()->timezone)->toBe('Asia/Karachi')
+        ->and($company->currency)->toBe('PKR');
+});
+
 test('an invalid timezone or currency is rejected', function (): void {
     $user = User::factory()->create();
     $company = resolve(CreateCompany::class)->handle($user, 'Acme Studio');
