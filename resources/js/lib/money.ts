@@ -4,6 +4,7 @@ export const CURRENCY_SYMBOLS: Record<string, string> = {
     EUR: '€',
     GBP: '£',
     INR: '₹',
+    PKR: 'Rs.',
     AED: 'AED ',
     SGD: 'S$',
     MYR: 'RM ',
