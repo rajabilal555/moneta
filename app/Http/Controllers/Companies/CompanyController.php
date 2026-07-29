@@ -38,7 +38,12 @@ final class CompanyController extends Controller
      */
     public function store(SaveCompanyRequest $request, CreateCompany $createCompany): RedirectResponse
     {
-        $company = $createCompany->handle($request->user(), $request->validated('name'));
+        $company = $createCompany->handle(
+            $request->user(),
+            $request->validated('name'),
+            $request->validated('timezone'),
+            $request->validated('currency'),
+        );
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Company created.')]);
 

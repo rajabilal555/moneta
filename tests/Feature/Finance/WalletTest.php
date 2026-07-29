@@ -75,6 +75,17 @@ test('a wallet from another company returns 404 via scoped bindings', function (
         ->assertNotFound();
 });
 
+test('a PKR company wallets index page renders', function (): void {
+    $user = User::factory()->create();
+    $company = financeCompany($user);
+
+    $company->update(['currency' => 'PKR', 'timezone' => 'Asia/Karachi']);
+
+    $this->actingAs($user)
+        ->get(route('wallets.index', ['current_company' => $company->slug]))
+        ->assertOk();
+});
+
 test('archiving a wallet toggles archived state', function (): void {
     $user = User::factory()->create();
     $company = financeCompany($user);

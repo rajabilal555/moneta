@@ -6,6 +6,13 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { edit, index, update } from '@/routes/companies';
 import { update as updatePreferences } from '@/routes/companies/preferences';
 import type { Company } from '@/types';
@@ -17,9 +24,6 @@ type Props = {
     currencies: { code: string; symbol: string }[];
 };
 
-const SELECT_CLASSES =
-    'h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:max-w-sm dark:bg-input/30';
-
 export default function CompanyEdit({
     company,
     canDelete,
@@ -27,6 +31,8 @@ export default function CompanyEdit({
     currencies,
 }: Props) {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [timezone, setTimezone] = useState(company.timezone);
+    const [currency, setCurrency] = useState(company.currency);
 
     const pageTitle = useMemo(() => `Edit ${company.name}`, [company.name]);
 
@@ -86,43 +92,66 @@ export default function CompanyEdit({
                     >
                         {({ errors, processing }) => (
                             <>
-                                <div className="grid gap-2">
+                                <div className="grid gap-2 md:max-w-sm">
                                     <Label htmlFor="timezone">Timezone</Label>
-                                    <select
-                                        id="timezone"
-                                        name="timezone"
-                                        defaultValue={company.timezone}
-                                        className={SELECT_CLASSES}
+                                    <Select
+                                        value={timezone}
+                                        onValueChange={setTimezone}
                                     >
-                                        {timezones.map((timezone) => (
-                                            <option
-                                                key={timezone}
-                                                value={timezone}
-                                            >
-                                                {timezone.replace(/_/g, ' ')}
-                                            </option>
-                                        ))}
-                                    </select>
+                                        <SelectTrigger
+                                            id="timezone"
+                                            className="w-full"
+                                        >
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {timezones.map((option) => (
+                                                <SelectItem
+                                                    key={option}
+                                                    value={option}
+                                                >
+                                                    {option.replace(/_/g, ' ')}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <input
+                                        type="hidden"
+                                        name="timezone"
+                                        value={timezone}
+                                    />
                                     <InputError message={errors.timezone} />
                                 </div>
 
-                                <div className="grid gap-2">
+                                <div className="grid gap-2 md:max-w-sm">
                                     <Label htmlFor="currency">Currency</Label>
-                                    <select
-                                        id="currency"
-                                        name="currency"
-                                        defaultValue={company.currency}
-                                        className={SELECT_CLASSES}
+                                    <Select
+                                        value={currency}
+                                        onValueChange={setCurrency}
                                     >
-                                        {currencies.map((option) => (
-                                            <option
-                                                key={option.code}
-                                                value={option.code}
-                                            >
-                                                {option.code} ({option.symbol})
-                                            </option>
-                                        ))}
-                                    </select>
+                                        <SelectTrigger
+                                            id="currency"
+                                            className="w-full"
+                                        >
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {currencies.map((option) => (
+                                                <SelectItem
+                                                    key={option.code}
+                                                    value={option.code}
+                                                >
+                                                    {option.code} (
+                                                    {option.symbol})
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <input
+                                        type="hidden"
+                                        name="currency"
+                                        value={currency}
+                                    />
                                     <InputError message={errors.currency} />
                                     <p className="text-xs text-muted-foreground">
                                         Reports and dashboards only count
