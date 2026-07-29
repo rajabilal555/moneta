@@ -16,6 +16,8 @@ declare module '@inertiajs/core' {
             sidebarOpen: boolean;
             currentCompany: Company | null;
             companies: Company[];
+            timezones: string[];
+            currencies: { code: string; symbol: string }[];
             [key: string]: unknown;
         };
     }

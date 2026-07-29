@@ -24,6 +24,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useCurrency } from '@/hooks/use-currency';
 import { archive, index, show } from '@/routes/wallets';
 import type { Wallet, WalletTypeOption } from '@/types';
 
@@ -42,6 +43,7 @@ type Props = {
 
 export default function WalletsIndex({ wallets, walletTypes }: Props) {
     const { currentCompany } = usePage().props;
+    const { currency: companyCurrency } = useCurrency();
     const [formOpen, setFormOpen] = useState(false);
     const [editing, setEditing] = useState<Wallet | null>(null);
 
@@ -71,7 +73,9 @@ export default function WalletsIndex({ wallets, walletTypes }: Props) {
     };
 
     const total = wallets
-        .filter((wallet) => !wallet.archived && wallet.currency === 'BDT')
+        .filter(
+            (wallet) => !wallet.archived && wallet.currency === companyCurrency,
+        )
         .reduce((sum, wallet) => sum + wallet.balance, 0);
 
     return (
@@ -90,9 +94,10 @@ export default function WalletsIndex({ wallets, walletTypes }: Props) {
                 </div>
 
                 <div className="text-sm text-muted-foreground">
-                    Total across active BDT wallets:{' '}
+                    Total across active {companyCurrency} wallets:{' '}
                     <Money
                         amount={total}
+                        currency={companyCurrency}
                         className="font-semibold text-foreground"
                     />
                 </div>
@@ -136,6 +141,10 @@ export default function WalletsIndex({ wallets, walletTypes }: Props) {
                                                 {wallet.typeLabel}
                                                 {wallet.accountNumber
                                                     ? ` · ${wallet.accountNumber}`
+                                                    : ''}
+                                                {wallet.currency !==
+                                                companyCurrency
+                                                    ? ` · ${wallet.currency}`
                                                     : ''}
                                             </p>
                                         </div>

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Support\Money;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -48,6 +50,11 @@ final class HandleInertiaRequests extends Middleware
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'currentCompany' => fn () => $user?->currentCompany ? $user->toUserCompany($user->currentCompany) : null,
             'companies' => fn () => $user?->toUserCompanies(includeCurrent: true) ?? [],
+            'timezones' => DateTimeZone::listIdentifiers(...),
+            'currencies' => fn () => collect(Money::CURRENCIES)->map(fn (string $symbol, string $code): array => [
+                'code' => $code,
+                'symbol' => trim($symbol),
+            ])->values(),
         ];
     }
 }

@@ -104,6 +104,7 @@ export default function WalletShow({ wallet, ledger, pagination }: Props) {
                                     {row.debit > 0 ? (
                                         <Money
                                             amount={row.debit}
+                                            currency={wallet.currency}
                                             className="text-emerald-600 dark:text-emerald-400"
                                         />
                                     ) : null}
@@ -112,12 +113,16 @@ export default function WalletShow({ wallet, ledger, pagination }: Props) {
                                     {row.credit > 0 ? (
                                         <Money
                                             amount={row.credit}
+                                            currency={wallet.currency}
                                             className="text-red-600 dark:text-red-400"
                                         />
                                     ) : null}
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <Money amount={row.balance} />
+                                    <Money
+                                        amount={row.balance}
+                                        currency={wallet.currency}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))}
