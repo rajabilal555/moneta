@@ -15,7 +15,6 @@ import { useState } from 'react';
 import Money from '@/components/finance/money';
 import WalletFormModal from '@/components/finance/wallet-form-modal';
 import Heading from '@/components/heading';
-import { useCurrency } from '@/hooks/use-currency';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,6 +24,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useCurrency } from '@/hooks/use-currency';
 import { archive, index, show } from '@/routes/wallets';
 import type { Wallet, WalletTypeOption } from '@/types';
 

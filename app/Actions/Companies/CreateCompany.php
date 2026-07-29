@@ -17,10 +17,18 @@ final readonly class CreateCompany
         private SetupDefaultCategories $setupDefaultCategories,
     ) {}
 
-    public function handle(User $user, string $name): Company
-    {
-        return DB::transaction(function () use ($user, $name) {
-            $company = Company::query()->create(['name' => $name]);
+    public function handle(
+        User $user,
+        string $name,
+        string $timezone = 'Asia/Dhaka',
+        string $currency = 'BDT',
+    ): Company {
+        return DB::transaction(function () use ($user, $name, $timezone, $currency) {
+            $company = Company::query()->create([
+                'name' => $name,
+                'timezone' => $timezone,
+                'currency' => $currency,
+            ]);
 
             $this->setupDefaultWallets->handle($company);
             $this->setupDefaultCategories->handle($company);

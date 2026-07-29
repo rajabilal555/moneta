@@ -23,13 +23,47 @@ test('companies can be created', function (): void {
         ->actingAs($user)
         ->post(route('companies.store'), [
             'name' => 'Test Company',
+            'timezone' => 'Asia/Dhaka',
+            'currency' => 'BDT',
         ]);
 
     $response->assertRedirect();
 
     $this->assertDatabaseHas('companies', [
         'name' => 'Test Company',
+        'timezone' => 'Asia/Dhaka',
+        'currency' => 'BDT',
     ]);
+});
+
+test('companies can be created with a chosen timezone and currency', function (): void {
+    $user = User::factory()->create();
+
+    $response = $this
+        ->actingAs($user)
+        ->post(route('companies.store'), [
+            'name' => 'Pakistan Studio',
+            'timezone' => 'Asia/Karachi',
+            'currency' => 'PKR',
+        ]);
+
+    $response->assertRedirect();
+
+    $company = Company::query()->where('name', 'Pakistan Studio')->firstOrFail();
+
+    expect($company->timezone)->toBe('Asia/Karachi')
+        ->and($company->currency)->toBe('PKR')
+        ->and($company->wallets()->where('currency', 'PKR')->count())->toBe(4);
+});
+
+test('company creation requires timezone and currency', function (): void {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->post(route('companies.store'), [
+            'name' => 'Test Company',
+        ])
+        ->assertSessionHasErrors(['timezone', 'currency']);
 });
 
 test('company slug uses next available suffix', function (): void {
@@ -43,6 +77,8 @@ test('company slug uses next available suffix', function (): void {
         ->actingAs($user)
         ->post(route('companies.store'), [
             'name' => 'Acme',
+            'timezone' => 'Asia/Dhaka',
+            'currency' => 'BDT',
         ]);
 
     $this->assertDatabaseHas('companies', [

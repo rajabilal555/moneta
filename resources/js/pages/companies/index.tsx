@@ -14,9 +14,15 @@ import type { Company } from '@/types';
 
 type Props = {
     companies: Company[];
+    timezones: string[];
+    currencies: { code: string; symbol: string }[];
 };
 
-export default function CompaniesIndex({ companies }: Props) {
+export default function CompaniesIndex({
+    companies,
+    timezones,
+    currencies,
+}: Props) {
     return (
         <>
             <Head title="Companies" />
@@ -31,7 +37,10 @@ export default function CompaniesIndex({ companies }: Props) {
                         description="Each company keeps its own wallets, transactions and reports"
                     />
 
-                    <CreateCompanyModal>
+                    <CreateCompanyModal
+                        timezones={timezones}
+                        currencies={currencies}
+                    >
                         <Button data-test="companies-new-company-button">
                             <Plus /> New company
                         </Button>

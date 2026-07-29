@@ -30,6 +30,11 @@ final class CompanyController extends Controller
 
         return Inertia::render('companies/index', [
             'companies' => $user->toUserCompanies(includeCurrent: true),
+            'timezones' => DateTimeZone::listIdentifiers(),
+            'currencies' => collect(Money::CURRENCIES)->map(fn (string $symbol, string $code): array => [
+                'code' => $code,
+                'symbol' => trim($symbol),
+            ])->values(),
         ]);
     }
 
@@ -38,7 +43,12 @@ final class CompanyController extends Controller
      */
     public function store(SaveCompanyRequest $request, CreateCompany $createCompany): RedirectResponse
     {
-        $company = $createCompany->handle($request->user(), $request->validated('name'));
+        $company = $createCompany->handle(
+            $request->user(),
+            $request->validated('name'),
+            $request->validated('timezone'),
+            $request->validated('currency'),
+        );
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Company created.')]);
 
